@@ -23,11 +23,15 @@ private:
 
 	QNetworkAccessManager* manager;
 	QNetworkRequest request;
-	QJsonDocument json;
 
 	const QString baseUrl = "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&language=en-US&page=1&include_adult=false&query=";
+	const QString basePosterUrl = "https://image.tmdb.org/t/p/w500";
+
+private slots:
+	void slotGetPoster(QString posterPath);
 
 signals:
 	void signalReady();
 	void signalError(QString error);
+	void signalPosterFound(QString posterPath);
 };
