@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -21,6 +20,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -29,54 +29,68 @@ class Ui_PostersClass
 {
 public:
     QWidget *centralWidget;
-    QGraphicsView *posterView;
-    QWidget *widget;
+    QVBoxLayout *verticalLayout;
     QGridLayout *gridLayout;
-    QLineEdit *searchEdit;
     QSpacerItem *horizontalSpacer;
+    QLineEdit *searchEdit;
     QPushButton *searchButton;
     QLabel *errorLabel;
+    QLabel *posterLabel;
 
     void setupUi(QMainWindow *PostersClass)
     {
         if (PostersClass->objectName().isEmpty())
             PostersClass->setObjectName(QStringLiteral("PostersClass"));
-        PostersClass->resize(324, 494);
+        PostersClass->resize(440, 694);
         centralWidget = new QWidget(PostersClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        posterView = new QGraphicsView(centralWidget);
-        posterView->setObjectName(QStringLiteral("posterView"));
-        posterView->setGeometry(QRect(30, 10, 273, 390));
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(30, 410, 271, 81));
-        gridLayout = new QGridLayout(widget);
+        verticalLayout = new QVBoxLayout(centralWidget);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(0, 0, 0, 0);
-        searchEdit = new QLineEdit(widget);
-        searchEdit->setObjectName(QStringLiteral("searchEdit"));
-
-        gridLayout->addWidget(searchEdit, 0, 0, 1, 2);
-
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 1, 0, 1, 1);
+        gridLayout->addItem(horizontalSpacer, 2, 0, 1, 1);
 
-        searchButton = new QPushButton(widget);
+        searchEdit = new QLineEdit(centralWidget);
+        searchEdit->setObjectName(QStringLiteral("searchEdit"));
+
+        gridLayout->addWidget(searchEdit, 1, 0, 1, 2);
+
+        searchButton = new QPushButton(centralWidget);
         searchButton->setObjectName(QStringLiteral("searchButton"));
 
-        gridLayout->addWidget(searchButton, 1, 1, 1, 1);
+        gridLayout->addWidget(searchButton, 2, 1, 1, 1);
 
-        errorLabel = new QLabel(widget);
+        errorLabel = new QLabel(centralWidget);
         errorLabel->setObjectName(QStringLiteral("errorLabel"));
+        errorLabel->setWordWrap(true);
 
-        gridLayout->addWidget(errorLabel, 2, 0, 1, 2);
+        gridLayout->addWidget(errorLabel, 3, 0, 1, 2);
+
+        posterLabel = new QLabel(centralWidget);
+        posterLabel->setObjectName(QStringLiteral("posterLabel"));
+        posterLabel->setEnabled(true);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(posterLabel->sizePolicy().hasHeightForWidth());
+        posterLabel->setSizePolicy(sizePolicy);
+        posterLabel->setScaledContents(false);
+        posterLabel->setAlignment(Qt::AlignCenter);
+
+        gridLayout->addWidget(posterLabel, 0, 0, 1, 2);
+
+
+        verticalLayout->addLayout(gridLayout);
 
         PostersClass->setCentralWidget(centralWidget);
 
         retranslateUi(PostersClass);
+        QObject::connect(searchEdit, SIGNAL(returnPressed()), searchButton, SLOT(click()));
 
         QMetaObject::connectSlotsByName(PostersClass);
     } // setupUi
@@ -86,6 +100,7 @@ public:
         PostersClass->setWindowTitle(QApplication::translate("PostersClass", "Posters", nullptr));
         searchButton->setText(QApplication::translate("PostersClass", "Search", nullptr));
         errorLabel->setText(QString());
+        posterLabel->setText(QString());
     } // retranslateUi
 
 };

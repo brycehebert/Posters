@@ -10,14 +10,9 @@ MovieDatabase::MovieDatabase(QObject *parent)
 
 		if (!reply->error()) {
 
-			//TODO: TMDB API will always be a json response. Find better way to determine if request was for poster image or just the movie details.
-			if (reply->rawHeaderPairs().at(4).second == "application/json;charset=utf-8") {
-				QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
-				qDebug() << json["results"][0]["poster_path"].toString();
-				QString posterPath = json["results"][0]["poster_path"].toString();
-				emit signalPosterFound(posterPath);
-			}
-			
+			downloadedData = reply->readAll();
+			emit signalDataReady();
+
 		}
 		else {
 			emit signalError(reply->errorString());
@@ -40,8 +35,13 @@ void MovieDatabase::query(QString searchString) {
 	manager->get(request);
 }
 
-void MovieDatabase::slotGetPoster(QString posterPath) {
-	request.setUrl(QUrl(basePosterUrl + posterPath));
+QByteArray MovieDatabase::getData()
+{
+	return downloadedData;
+}
+
+void MovieDatabase::getPoster(QString posterPath) {
+	request.setUrl(QUrl(basePosterUrl + posterPath + apiPreface + apiKey));
 	manager->get(request);
 }
 

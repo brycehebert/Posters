@@ -4,7 +4,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QJsonDocument>
 #include <QJsonArray>
 #include <QDebug>
 
@@ -17,9 +16,12 @@ public:
 	~MovieDatabase();
 	QString getBaseUrl();
 	void query(QString searchString);
+	void getPoster(QString posterPath);
+	QByteArray getData();
 
 private:
 	static const QString apiKey;
+	const QString apiPreface = "?api_key=";
 
 	QNetworkAccessManager* manager;
 	QNetworkRequest request;
@@ -27,11 +29,11 @@ private:
 	const QString baseUrl = "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&language=en-US&page=1&include_adult=false&query=";
 	const QString basePosterUrl = "https://image.tmdb.org/t/p/w500";
 
-private slots:
-	void slotGetPoster(QString posterPath);
+	QByteArray downloadedData;
 
 signals:
-	void signalReady();
+	void signalDataReady();
+	void signalPosterReady();
 	void signalError(QString error);
 	void signalPosterFound(QString posterPath);
 };
