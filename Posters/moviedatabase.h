@@ -4,7 +4,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QJsonArray>
 #include <QDebug>
 
 class MovieDatabase : public QObject
@@ -21,7 +20,7 @@ public:
 
 private:
 	static const QString apiKey;
-	const QString apiPreface = "?api_key=";
+	static const QString apiPreface;
 
 	QNetworkAccessManager* manager;
 	QNetworkRequest request;
@@ -33,7 +32,5 @@ private:
 
 signals:
 	void signalDataReady();
-	void signalPosterReady();
 	void signalError(QString error);
-	void signalPosterFound(QString posterPath);
 };
